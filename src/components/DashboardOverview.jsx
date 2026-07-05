@@ -234,7 +234,7 @@ export default function DashboardOverview({
       {/* Charts & Health Section */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
         
-        {/* Throughput Chart (2/3 width placeholder using CSS Grid on desktop) */}
+        {/* Throughput Chart (2/3 width on desktop) */}
         <div style={{
           gridColumn: 'span 2',
           background: 'var(--bg-surface)',

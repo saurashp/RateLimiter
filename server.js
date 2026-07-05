@@ -453,7 +453,7 @@ app.post('/api/system/clear-logs', (req, res) => {
   res.json({ success: true });
 });
 
-// --- REAL TEST API ROUTE MOCKS FOR ENFORCED RATE LIMITING ---
+// --- Mock API endpoints for testing rate limiting ---
 
 app.get('/api/v1/products', (req, res) => {
   res.json({

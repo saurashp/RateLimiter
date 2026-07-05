@@ -15,14 +15,13 @@ export default function TrafficLogs({ logs, onClearLogs, anomalies, onMitigateAn
     return matchesPath && matchesReason;
   });
 
-  // If streaming is paused, we slice a snapshot, otherwise we use the original.
-  // In a real app we might store a paused logs buffer. Let's just slice the log list.
+  // Freeze display if streaming is paused, otherwise show full logs stream
   const displayLogs = isStreaming ? filteredLogs : filteredLogs.slice(0, 50); // Frozen display
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '24px 0' }}>
       
-      {/* AI Anomaly Panel */}
+      {/* threat intelligence anomaly panel */}
       {anomalies && anomalies.length > 0 && (
         <div style={{
           background: 'rgba(239, 68, 68, 0.08)',

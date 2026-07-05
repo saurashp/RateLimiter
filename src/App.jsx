@@ -458,7 +458,7 @@ export default function App() {
               {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
 
-            {/* Ctrl + K command palette search input mockup */}
+            {/* Command palette search bar trigger */}
             <div 
               onClick={() => setIsCmdOpen(true)}
               style={{

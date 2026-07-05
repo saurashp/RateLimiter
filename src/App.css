@@ -1,0 +1,6 @@
+/* Clear default App.css styles as they are replaced by our design system in index.css */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

@@ -1,10 +1,6 @@
 # LimitRate // Distributed API Rate Limiting Dashboard & Simulator
 
 LimitRate is a real-time administrative interface and simulation engine designed for managing, configuring, and monitoring distributed API rate-limiting services. Built with a modern, high-performance web stack, it provides visual telemetry and control surfaces to audit traffic patterns, mitigate threats, manage whitelist exceptions, and mock production rate-limit behaviors.
-
-> [!NOTE]
-> The user interface for this dashboard was created using Google Stitch.
-
 ---
 
 ## 🚀 Key Features
@@ -44,7 +40,7 @@ LimitRate is a real-time administrative interface and simulation engine designed
 ## 🛠️ Technology Stack
 
 *   **Core:** React 19, JavaScript (ES Modules)
-*   **UI Framework:** Google Stitch (for UI structure and component composition)
+*   **UI Architecture:** Custom-designed modular React component structure
 *   **Build Tool:** Vite 8 (optimized HMR and production bundling)
 *   **Styling:** Vanilla CSS (Glassmorphism layout, premium dark-mode aesthetic, custom animation micro-interactions)
 *   **Icons:** Lucide React

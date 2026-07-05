@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Cpu, Terminal, ShieldAlert, ShieldCheck, Search, Bell, Activity, Menu, X, Globe, Key, AlertTriangle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Terminal, ShieldAlert, ShieldCheck, Search, Activity, Menu, X, AlertTriangle } from 'lucide-react';
 import DashboardOverview from './components/DashboardOverview';
 import ConfigurationShell from './components/ConfigurationShell';
 import TrafficLogs from './components/TrafficLogs';
@@ -54,7 +54,10 @@ export default function App() {
         const res = await fetch('/api/state');
         if (res.ok && active) {
           const data = await res.json();
-          setConfig(data.config);
+          setConfig(prev => {
+            if (JSON.stringify(prev) === JSON.stringify(data.config)) return prev;
+            return data.config;
+          });
           setOverrides(data.overrides);
           setWhitelist(data.whitelist);
           setMetrics(data.metrics);

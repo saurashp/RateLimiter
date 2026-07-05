@@ -82,8 +82,24 @@ const pickRandomPath = (ip) => {
   return paths[Math.floor(Math.random() * paths.length)];
 };
 
+// Helper to anonymize IP addresses
+const anonymizeIp = (ip) => {
+  if (!ip) return '0.0.0.0';
+  if (ip.includes('.')) {
+    const parts = ip.split('.');
+    if (parts.length === 4) {
+      return `${parts[0]}.${parts[1]}.${parts[2]}.xxx`;
+    }
+  }
+  if (ip.includes(':')) {
+    const parts = ip.split(':');
+    return `${parts.slice(0, 3).join(':')}:xxxx:xxxx:xxxx:xxxx`;
+  }
+  return 'xxx.xxx.xxx.xxx';
+};
+
 // Core Rate Limiting Evaluator
-// Returns { allowed: boolean, reason: string, limitRps: number, ruleLabel: string }
+// Returns { allowed: boolean, reason: string, limitRps: number, ruleLabel: string, limitKey: string }
 function evaluateRateLimit(clientIp, path, apiKey) {
   const now = Date.now();
 
@@ -92,12 +108,12 @@ function evaluateRateLimit(clientIp, path, apiKey) {
   const isKeyWhitelisted = apiKey && whitelist.some(w => w.type === 'API_KEY' && w.value === apiKey);
 
   if (isIpWhitelisted || isKeyWhitelisted) {
-    return { allowed: true, reason: 'Whitelisted bypass exception', limitRps: Infinity, ruleLabel: 'Whitelist Exception' };
+    return { allowed: true, reason: 'Whitelisted bypass exception', limitRps: Infinity, ruleLabel: 'Whitelist Exception', limitKey: null };
   }
 
   // 2. Fail-Open Check
   if (config.failOpen && Math.random() < 0.05) {
-    return { allowed: true, reason: 'Fail-Open Policy Fallback', limitRps: Infinity, ruleLabel: 'Fail-Open' };
+    return { allowed: true, reason: 'Fail-Open Policy Fallback', limitRps: Infinity, ruleLabel: 'Fail-Open', limitKey: null };
   }
 
   // 3. Find limits rules
@@ -130,11 +146,12 @@ function evaluateRateLimit(clientIp, path, apiKey) {
       allowed: false,
       reason: `Exceeded ${ruleLabel} (${limitRps} req/window)`,
       limitRps,
-      ruleLabel
+      ruleLabel,
+      limitKey
     };
   } else {
     requestHistory[limitKey].push(now);
-    return { allowed: true, reason: 'Allowed requests limit check passed', limitRps, ruleLabel };
+    return { allowed: true, reason: 'Allowed requests limit check passed', limitRps, ruleLabel, limitKey };
   }
 }
 
@@ -188,7 +205,7 @@ setInterval(() => {
       newBlockedLogs.push({
         id: `log-${now}-${Math.random()}`,
         timestamp: now,
-        ip: client.ip,
+        ip: config.ipAnonymization ? anonymizeIp(client.ip) : client.ip,
         country: client.country,
         countryFlag: client.flag,
         method,
@@ -292,7 +309,7 @@ const realRateLimiterMiddleware = (req, res, next) => {
     // If config says injection is active, append rate-limiting telemetry headers
     if (config.xHeaderInjection) {
       res.setHeader('X-RateLimit-Limit', result.limitRps === Infinity ? 99999 : result.limitRps);
-      res.setHeader('X-RateLimit-Remaining', Math.max(0, (result.limitRps === Infinity ? 99999 : result.limitRps) - (requestHistory[clientIp] || []).length));
+      res.setHeader('X-RateLimit-Remaining', Math.max(0, (result.limitRps === Infinity ? 99999 : result.limitRps) - (requestHistory[result.limitKey || clientIp] || []).length));
       res.setHeader('X-RateLimit-Reset', 60);
     }
     next();
@@ -302,7 +319,7 @@ const realRateLimiterMiddleware = (req, res, next) => {
     logs = [{
       id: `log-${Date.now()}-${Math.random()}`,
       timestamp: Date.now(),
-      ip: clientIp,
+      ip: config.ipAnonymization ? anonymizeIp(clientIp) : clientIp,
       country: 'Local Client',
       countryFlag: '💻',
       method: req.method,
@@ -325,8 +342,9 @@ app.get('/api/state', (req, res) => {
   
   // Populate standard clients
   simulatorClients.forEach(c => {
-    offenders[c.ip] = {
-      ip: c.ip,
+    const ipKey = config.ipAnonymization ? anonymizeIp(c.ip) : c.ip;
+    offenders[ipKey] = {
+      ip: ipKey,
       country: c.country,
       flag: c.flag,
       requests: 0,

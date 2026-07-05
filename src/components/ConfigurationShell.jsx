@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, ShieldAlert, Plus, Trash2, Key, Terminal, Code, ToggleLeft, ToggleRight, Save, Info } from 'lucide-react';
+import { Settings, ShieldAlert, Plus, Trash2, Code, Save, Info } from 'lucide-react';
 
 export default function ConfigurationShell({
   config,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Terminal, ArrowRight, ShieldAlert, Cpu } from 'lucide-react';
 
-export default function CommandPalette({ isOpen, onClose, onAction, activeTab }) {
+export default function CommandPalette({ isOpen, onClose, onAction }) {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef(null);
@@ -13,8 +13,8 @@ export default function CommandPalette({ isOpen, onClose, onAction, activeTab })
     { id: 'nav_logs', name: 'Navigate: Traffic & Audit Logs', category: 'Navigation', icon: Terminal, action: () => onAction('nav', 'logs') },
     { id: 'nav_whitelist', name: 'Navigate: Whitelist Manager', category: 'Navigation', icon: ShieldAlert, action: () => onAction('nav', 'whitelist') },
     { id: 'toggle_fail_open', name: 'Toggle Policy: Fail-Open / Fail-Closed', category: 'Security', icon: ShieldAlert, action: () => onAction('toggle', 'failOpen') },
-    { id: 'toggle_headers', name: 'Toggle Headers: X-RateLimit Injection', category: 'Headers', icon: Terminal, action: () => onAction('toggle', 'headers') },
-    { id: 'toggle_anonymize', name: 'Toggle Privacy: IP Anonymization', category: 'Privacy', icon: ShieldAlert, action: () => onAction('toggle', 'anonymize') },
+    { id: 'toggle_headers', name: 'Toggle Headers: X-RateLimit Injection', category: 'Headers', icon: Terminal, action: () => onAction('toggle', 'xHeaderInjection') },
+    { id: 'toggle_anonymize', name: 'Toggle Privacy: IP Anonymization', category: 'Privacy', icon: ShieldAlert, action: () => onAction('toggle', 'ipAnonymization') },
     { id: 'reset_stats', name: 'System: Reset Live Metrics & Charts', category: 'System', icon: Cpu, action: () => onAction('system', 'resetStats') },
     { id: 'clear_logs', name: 'System: Clear Audit Logs Stream', category: 'System', icon: Terminal, action: () => onAction('system', 'clearLogs') },
     { id: 'add_whitelist_ip', name: 'Action: Add IP to Whitelist', category: 'Whitelist', icon: ShieldAlert, action: () => onAction('action', 'addWhitelist') }

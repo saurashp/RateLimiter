@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Chart } from 'chart.js/auto';
-import { Cpu, Ban, Activity, Database, Clock, RefreshCw, Plus, ShieldCheck, Globe } from 'lucide-react';
+import { Cpu, Ban, Activity, Database, Clock, Plus } from 'lucide-react';
 
 export default function DashboardOverview({
   metrics,
